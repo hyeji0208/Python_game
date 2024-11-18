@@ -33,10 +33,10 @@ def spawn_block():
 # 아이템 종류
 item_types = [
     {'model': 'sphere', 'color': color.red, 'scale': (0.5, 0.5, 0.5)},  # 체력
-    {'model': 'sphere', 'color': color.blue, 'scale': (0.5, 0.5, 0.5)}    # 휴학
+    {'model': 'sphere', 'color': color.blue, 'scale': (0.5, 0.5, 0.5)}  # 휴학
 ]
 
-#아이템 리스트 생성
+# 아이템 리스트 생성
 items = []
 def spawn_item():
     item_type = random.choice(item_types)
@@ -47,8 +47,7 @@ def spawn_item():
         position=(random.choice(pos), 0, 20)
     )
     items.append(item)
-    invoke(spawn_item, delay = 5)
-    
+    invoke(spawn_item, delay=5)
 
 # 카메라 생성
 camera.position = (0, 2, -10)
@@ -57,27 +56,22 @@ camera.rotation = (3, 0, 0)
 # 캐릭터 좌우 이동, 스페이스 점프
 def input(key):
     if key == 'space' and player.y == 0:
-        player.y += 2
-        invoke(setattr, player, 'y', player.y - 2, delay=.25)
-
-    elif key == 'd':
+        player.animate_y(2, duration=0.25, curve=curve.out_quad)
+        invoke(player.animate_y, 0, duration=0.25, delay=0.25, curve=curve.in_quad)
+    elif key == 'd' and player.x < max(pos):
         player.x += 2
-        if player.x > 3:
-            player.x -= 2
-    elif key == 'a':
+    elif key == 'a' and player.x > min(pos):
         player.x -= 2
-        if player.x < -3:
-            player.x += 2
 
 # 장애물, 아이템 이동
 def update():
-    for block in blocks:
+    for block in blocks[:]:
         block.z -= 0.3
         if block.z < -4:  # 화면 밖으로 나가면 삭제
             blocks.remove(block)
             destroy(block)
 
-    for item in items:
+    for item in items[:]:
         item.z -= 0.3
         if item.z < -4:
             items.remove(item)
