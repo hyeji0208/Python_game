@@ -7,6 +7,11 @@ app = Ursina()
 # 맵 한정하기
 pos = [-2, 0, 2]
 
+# 점수 표시
+score = 0
+elapsed_time = 0
+score_text = Text(f"Score: {score}", position=(-0.7, 0.45), scale=2, color=color.white)
+
 # 플레이어 생성
 player = Entity(model='cube', color=color.white, scale_y=1.5, position=(0, 0, 2), collider='box')
 
@@ -25,7 +30,8 @@ def spawn_block():
         model=block_type['model'],
         color=block_type['color'],
         scale=block_type['scale'],
-        position=(random.choice(pos), 0, 20)
+        position=(random.choice(pos), 0, 20),
+        collider='cube'
     )
     blocks.append(block)
     invoke(spawn_block, delay=2)
@@ -74,13 +80,19 @@ def update():
 
     for item in items[:]:
         item.z -= 0.3
-        if item.z < -4:
+        if (item.z < -4) or (player.intersects(item).hit):
             items.remove(item)
             destroy(item)
 
-        if player.intersects(item).hit:
-            items.remove(item)
-            destroy(item)
+# 시간 기반 점수 증가
+    global score, elapsed_time
+    elapsed_time += time.dt
+
+    # 1초마다 점수 증가
+    if elapsed_time >= 1:
+        score += 1
+        elapsed_time = 0  # 타이머 리셋
+        score_text.text = f"score: {score}"
 
 
 # 게임 시작
