@@ -8,7 +8,7 @@ app = Ursina()
 pos = [-2, 0, 2]
 
 # 플레이어 생성
-player = Entity(model='cube', color=color.white, scale_y=1.5, position=(0, 0, 2))
+player = Entity(model='cube', color=color.white, scale_y=1.5, position=(0, 0, 2), collider='box')
 
 # 장애물 종류 정의
 block_types = [
@@ -44,7 +44,8 @@ def spawn_item():
         model=item_type['model'],
         color=item_type['color'],
         scale=item_type['scale'],
-        position=(random.choice(pos), 0, 20)
+        position=(random.choice(pos), 0, 20),
+        collider='sphere'
     )
     items.append(item)
     invoke(spawn_item, delay=5)
@@ -76,6 +77,11 @@ def update():
         if item.z < -4:
             items.remove(item)
             destroy(item)
+
+        if player.intersects(item).hit:
+            items.remove(item)
+            destroy(item)
+
 
 # 게임 시작
 spawn_block()
