@@ -15,6 +15,34 @@ score_text = Text(f"Score: {score}", position=(-0.7, 0.45), scale=2, color=color
 # 플레이어 생성
 player = Entity(model='cube', color=color.white, scale_y=1.5, position=(0, 0, 2), collider='box')
 
+# 체력 생성
+max_health = 3
+health = max_health
+
+hearts = []
+for i in range(max_health):
+    heart = Entity(
+        model='quad',
+        texture='heart.png',
+        position=(2 + i * 0.35, 3.2),
+        scale=(0.35, 0.35)
+    )
+    hearts.append(heart)
+
+# 체력감소함수
+invincible = False # 무적 상태
+
+def reduce_health():
+    global health, invincible
+    if not invincible: # 무적 상태가 아닐 경우 체력 감소
+        invincible = True
+        health -= 1
+        if health >= 0:
+            hearts[health].enabled = False
+
+        invoke(setattr, None, 'invincible', False, delay=1)  # 1초 후 무적 해제
+
+
 # 장애물 종류 정의
 block_types = [
     {'model': 'cube', 'color': color.yellow, 'scale': (0.5, 0.5, 0.5)},  # 종이
@@ -24,6 +52,7 @@ block_types = [
 
 # 장애물 리스트 생성
 blocks = []
+
 def spawn_block():
     block_type = random.choice(block_types)
     block = Entity(
@@ -78,9 +107,12 @@ def update():
             blocks.remove(block)
             destroy(block)
 
+        elif player.intersects(block).hit: # 장애물과 충돌감지
+            reduce_health()
+
     for item in items[:]:
         item.z -= 0.3
-        if (item.z < -4) or (player.intersects(item).hit):
+        if (item.z < -4) or (player.intersects(item).hit): # 아이템 충돌
             items.remove(item)
             destroy(item)
 
