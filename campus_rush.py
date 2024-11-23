@@ -32,15 +32,17 @@ for i in range(max_health):
 # 체력감소함수
 invincible = False # 무적 상태
 
+
 def reduce_health():
     global health, invincible
-    if not invincible: # 무적 상태가 아닐 경우 체력 감소
-        invincible = True
+    if invincible != True: # 무적 상태가 아닐 경우 체력 감소
         health -= 1
         if health >= 0:
             hearts[health].enabled = False
 
-        invoke(setattr, None, 'invincible', False, delay=1)  # 1초 후 무적 해제
+            
+        
+        
 
 
 # 장애물 종류 정의
@@ -109,6 +111,8 @@ def update():
 
         elif player.intersects(block).hit: # 장애물과 충돌감지
             reduce_health()
+            blocks.remove(block)
+            destroy(block)
 
     for item in items[:]:
         item.z -= 0.3
