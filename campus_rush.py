@@ -40,12 +40,16 @@ def reduce_health():
         if health >= 0:
             hearts[health].enabled = False
 
-#체력증가함수
+# 아이템 효과 함수
+# 체력 아이템 (체력증가)
 def plus_health():
     global health
     if health < 3:
         hearts[health].enabled = True
         health += 1
+
+# 휴학신청서 아이템 (무적+스피드업)
+
 
 # 장애물 종류 정의
 block_types = [
@@ -138,7 +142,7 @@ def update():
     elapsed_time += time.dt
 
     # 1초마다 점수 증가
-    if elapsed_time >= 1:
+    if elapsed_time >= 0.1:
         score += 1
         elapsed_time = 0  # 타이머 리셋
         score_text.text = f"score: {score}"
@@ -148,3 +152,14 @@ def update():
 spawn_block()
 spawn_item()
 app.run()
+
+"""
+점수구간
+F 0 ~ 100 (100 차이)
+D 101 ~ 250 (150 차이)
+C 251 ~ 450 (200 차이)
+B 451 ~ 700 (250 차이)
+A 701 ~ 999  (300 차이)
+A+ 1000점 이상
+S 히든 2000
+"""
