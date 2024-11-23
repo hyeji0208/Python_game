@@ -34,7 +34,7 @@ for i in range(max_health):
 invincible = False # 무적 상태
 
 def reduce_health():
-    global invincible
+    global health, invincible
     if invincible != True: # 무적 상태가 아닐 경우 체력 감소
         health -= 1
         if health >= 0:
@@ -42,10 +42,10 @@ def reduce_health():
 
 #체력증가함수
 def plus_health():
-    health += 1
+    global health
     if health < 3:
         hearts[health].enabled = True
-
+        health += 1
 
 # 장애물 종류 정의
 block_types = [
@@ -125,12 +125,13 @@ def update():
             destroy(item)
 
         elif player.intersects(item).hit:
-            items.remove(item)
-            destroy(item)
-
             match item.name:
                 case 'heart':
                     plus_health()
+                case 'paper':
+                    plus_health()
+            items.remove(item)
+            destroy(item)
 
 # 시간 기반 점수 증가
     global score, elapsed_time
