@@ -16,6 +16,7 @@ score_text = Text(f"Score: {score}", position=(-0.7, 0.45), scale=2, color=color
 player = Entity(model='cube', color=color.white, scale_y=1.5, position=(0, 0, 2), collider='box')
 
 # 체력 생성
+global health
 max_health = 3
 health = max_health
 
@@ -32,24 +33,25 @@ for i in range(max_health):
 # 체력감소함수
 invincible = False # 무적 상태
 
-
 def reduce_health():
-    global health, invincible
+    global invincible
     if invincible != True: # 무적 상태가 아닐 경우 체력 감소
         health -= 1
         if health >= 0:
             hearts[health].enabled = False
 
-            
-        
-        
+#체력증가함수
+def plus_health():
+    health += 1
+    if health < 3:
+        hearts[health].enabled = True
 
 
 # 장애물 종류 정의
 block_types = [
-    {'model': 'cube', 'color': color.yellow, 'scale': (0.5, 0.5, 0.5)},  # 종이
-    {'model': 'cube', 'color': color.gray, 'scale': (0.5, 0.5, 0.5)},  # 노트북
-    {'model': 'cube', 'color': color.green, 'scale': (0.5, 1, 0.5)}   # 팀원
+    {'name': 'task','model': 'cube', 'color': color.yellow, 'scale': (0.5, 0.5, 0.5)},  # 과제
+    {'name': 'labtop', 'model': 'cube', 'color': color.gray, 'scale': (0.5, 0.5, 0.5)},  # 노트북
+    {'name': 'team', 'model': 'cube', 'color': color.green, 'scale': (0.5, 1, 0.5)}   # 팀원
 ]
 
 # 장애물 리스트 생성
@@ -61,6 +63,7 @@ def spawn_block():
         model=block_type['model'],
         color=block_type['color'],
         scale=block_type['scale'],
+        name=block_type['name'],
         position=(random.choice(pos), 0, 20),
         collider='cube'
     )
@@ -69,8 +72,8 @@ def spawn_block():
 
 # 아이템 종류
 item_types = [
-    {'model': 'sphere', 'color': color.red, 'scale': (0.5, 0.5, 0.5)},  # 체력
-    {'model': 'sphere', 'color': color.blue, 'scale': (0.5, 0.5, 0.5)}  # 휴학
+    {'name': 'heart', 'model': 'sphere', 'color': color.red, 'scale': (0.5, 0.5, 0.5)},  # 체력
+    {'name': 'paper', 'model': 'sphere', 'color': color.blue, 'scale': (0.5, 0.5, 0.5)}  # 휴학신청서
 ]
 
 # 아이템 리스트 생성
@@ -81,6 +84,7 @@ def spawn_item():
         model=item_type['model'],
         color=item_type['color'],
         scale=item_type['scale'],
+        name=item_type['name'],
         position=(random.choice(pos), 0, 20),
         collider='sphere'
     )
@@ -116,9 +120,17 @@ def update():
 
     for item in items[:]:
         item.z -= 0.3
-        if (item.z < -4) or (player.intersects(item).hit): # 아이템 충돌
+        if item.z < -4 : # 아이템 충돌
             items.remove(item)
             destroy(item)
+
+        elif player.intersects(item).hit:
+            items.remove(item)
+            destroy(item)
+
+            match item.name:
+                case 'heart':
+                    plus_health()
 
 # 시간 기반 점수 증가
     global score, elapsed_time
