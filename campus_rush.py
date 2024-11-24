@@ -24,9 +24,9 @@ hearts = []
 for i in range(max_health):
     heart = Entity(
         model='quad',
-        texture='heart.png',
+        texture='health.png',
         position=(2 + i * 0.35, 3.2),
-        scale=(0.35, 0.35)
+        scale=(0.47, 0.47)
     )
     hearts.append(heart)
 
@@ -48,8 +48,15 @@ def plus_health():
         hearts[health].enabled = True
         health += 1
 
-# 휴학신청서 아이템 (무적+스피드업)
+# 휴학신청서 아이템 (무적)
+def rest():
+    global invincible
+    invincible = True
+    invoke (rest_off, delay=5)
 
+def rest_off():
+    global invincible
+    invincible = False
 
 # 장애물 종류 정의
 block_types = [
@@ -124,7 +131,7 @@ def update():
 
     for item in items[:]:
         item.z -= 0.3
-        if item.z < -4 : # 아이템 충돌
+        if item.z < -4 :
             items.remove(item)
             destroy(item)
 
@@ -133,7 +140,7 @@ def update():
                 case 'heart':
                     plus_health()
                 case 'paper':
-                    plus_health()
+                    rest()
             items.remove(item)
             destroy(item)
 
@@ -155,11 +162,12 @@ app.run()
 
 """
 점수구간
-F 0 ~ 100 (100 차이)
-D 101 ~ 250 (150 차이)
-C 251 ~ 450 (200 차이)
-B 451 ~ 700 (250 차이)
-A 701 ~ 999  (300 차이)
-A+ 1000점 이상
+F 0 ~ 100 (100 차이) - 장애물 : 과제, 아이템 : 체력 (5초)
+D 101 ~ 250 (150 차이) - 장애물 : 과제+노트북, 아이템 : 체력 (5초)
+C+ 251 ~ 450 (200 차이) - 장애물 : 과제+노트북+팀, 아이템 : 무적(10초) + 체력 (6초)
+B+ 451 ~ 700 (250 차이) - 장애물 : 속도증가, 아이템 : 무적(10초) + 체력 (7초)
+A 701 ~ 999  (300 차이) - 장애물 : 속도증가, 아이템 : 무적(10초) + 체력 (8초)
+A+ 1000점 이상 : 장애물 : 속도증가, 아이템 : 10초
+
 S 히든 2000
 """
