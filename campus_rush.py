@@ -24,7 +24,7 @@ hearts = []
 for i in range(max_health):
     heart = Entity(
         model='quad',
-        texture='health.png',
+        texture='graphic/health.png',
         position=(2 + i * 0.35, 3.2),
         scale=(0.47, 0.47)
     )
@@ -60,26 +60,49 @@ def rest_off():
 
 # 장애물 종류 정의
 block_types = [
-    {'name': 'task','model': 'cube', 'color': color.yellow, 'scale': (0.5, 0.5, 0.5)},  # 과제
-    {'name': 'labtop', 'model': 'cube', 'color': color.gray, 'scale': (0.5, 0.5, 0.5)},  # 노트북
-    {'name': 'team', 'model': 'cube', 'color': color.green, 'scale': (0.5, 1, 0.5)}   # 팀원
+    {'name': 'task','model': 'quad', 'texture': 'graphic/book.png', 'scale': (1, 1, 1)},  # 과제
+    {'name': 'labtop', 'model': 'quad', 'texture': 'graphic/labtop.png', 'scale': (1, 1, 1)},  # 노트북
+    {'name': 'team', 'model': 'quad', 'texture': 'graphic/team1.png', 'scale': (0.5, 1, 0.5)}   # 팀원
 ]
 
 # 장애물 리스트 생성
 blocks = []
 
 def spawn_block():
-    block_type = random.choice(block_types)
+    
+    if score <= 100:
+        block_type = block_types[0]
+    
+    elif score > 100 and score <= 250:
+        block_type = (block_types[random.randrange(0,2)])
+
+    elif score > 250:
+        block_type = (block_types[random.randrange(0,3)])
+
     block = Entity(
         model=block_type['model'],
-        color=block_type['color'],
+        texture=block_type['texture'],
         scale=block_type['scale'],
         name=block_type['name'],
         position=(random.choice(pos), 0, 20),
-        collider='cube'
+        collider='quad'
     )
     blocks.append(block)
     invoke(spawn_block, delay=2)
+
+# 게임 난이도
+def level (block):
+    if score <=450:
+        block.z -= 0.3
+        
+    elif score > 450 and score <= 700:
+        block.z -= 0.5
+
+    elif score > 700 and score <= 999:
+        block.z -= 0.7
+
+    elif score > 999:
+        block.z -= 1
 
 # 아이템 종류
 item_types = [
@@ -119,7 +142,7 @@ def input(key):
 # 장애물, 아이템 이동
 def update():
     for block in blocks[:]:
-        block.z -= 0.3
+        level(block)
         if block.z < -4:  # 화면 밖으로 나가면 삭제
             blocks.remove(block)
             destroy(block)
@@ -148,7 +171,7 @@ def update():
     global score, elapsed_time
     elapsed_time += time.dt
 
-    # 1초마다 점수 증가
+    # 0.1초마다 점수 증가
     if elapsed_time >= 0.1:
         score += 1
         elapsed_time = 0  # 타이머 리셋
