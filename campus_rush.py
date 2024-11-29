@@ -62,7 +62,8 @@ def rest_off():
 block_types = [
     {'name': 'task','model': 'quad', 'texture': 'graphic/book.png', 'scale': (1, 1, 1)},  # 과제
     {'name': 'labtop', 'model': 'quad', 'texture': 'graphic/labtop.png', 'scale': (1, 1, 1)},  # 노트북
-    {'name': 'team', 'model': 'quad', 'texture': 'graphic/team1.png', 'scale': (0.5, 1, 0.5)}   # 팀원
+    {'name': 'team1', 'model': 'quad', 'texture': 'graphic/team1.png', 'scale': (1, 2, 1)},   # 팀원
+    {'name': 'team2', 'model': 'quad', 'texture': 'graphic/team2.png', 'scale': (1, 2, 1)}   # 팀원
 ]
 
 # 장애물 리스트 생성
@@ -77,7 +78,7 @@ def spawn_block():
         block_type = (block_types[random.randrange(0,2)])
 
     elif score > 250:
-        block_type = (block_types[random.randrange(0,3)])
+        block_type = (block_types[random.randrange(0,4)])
 
     block = Entity(
         model=block_type['model'],
@@ -92,11 +93,17 @@ def spawn_block():
 
 # 게임 난이도
 def level (block):
-    if score <=450:
+    if score <=100 :
         block.z -= 0.3
+
+    elif score > 100 and score <= 250:
+        block.z -= 0.4
+
+    elif score > 250 and score <= 450:
+        block.z -= 0.5
         
     elif score > 450 and score <= 700:
-        block.z -= 0.5
+        block.z -= 0.6
 
     elif score > 700 and score <= 999:
         block.z -= 0.7
@@ -106,24 +113,35 @@ def level (block):
 
 # 아이템 종류
 item_types = [
-    {'name': 'heart', 'model': 'sphere', 'color': color.red, 'scale': (0.5, 0.5, 0.5)},  # 체력
-    {'name': 'paper', 'model': 'sphere', 'color': color.blue, 'scale': (0.5, 0.5, 0.5)}  # 휴학신청서
+    {'name': 'heart1', 'model': 'quad', 'texture': 'graphic/heart1.png', 'scale': (1, 1, 1)},  # 체력
+    {'name': 'heart2', 'model': 'quad', 'texture': 'graphic/heart2.png', 'scale': (1, 1, 1)},  
+    {'name': 'paper', 'model': 'quad', 'texture': 'graphic/rest.png', 'scale': (1, 1, 1)}  # 휴학신청서
 ]
 
 # 아이템 리스트 생성
 items = []
 def spawn_item():
-    item_type = random.choice(item_types)
+    if score <= 250:
+        item_type = item_types[random.randrange(0,2)]
+        delay = 5
+    
+    elif score >250 and score <= 999:
+        item_type = (item_types[random.randrange(0,3)])
+        if item_types[random.randrange(0,2)]:
+            delay = 5
+        elif item_types[2]:
+            delay = 10
+
     item = Entity(
         model=item_type['model'],
-        color=item_type['color'],
+        texture=item_type['texture'],
         scale=item_type['scale'],
         name=item_type['name'],
         position=(random.choice(pos), 0, 20),
-        collider='sphere'
+        collider='quad'
     )
     items.append(item)
-    invoke(spawn_item, delay=5)
+    invoke(spawn_item, delay = delay)
 
 # 카메라 생성
 camera.position = (0, 2, -10)
@@ -160,7 +178,9 @@ def update():
 
         elif player.intersects(item).hit:
             match item.name:
-                case 'heart':
+                case 'heart1':
+                    plus_health()
+                case 'heart2':
                     plus_health()
                 case 'paper':
                     rest()
@@ -187,9 +207,9 @@ app.run()
 점수구간
 F 0 ~ 100 (100 차이) - 장애물 : 과제, 아이템 : 체력 (5초)
 D 101 ~ 250 (150 차이) - 장애물 : 과제+노트북, 아이템 : 체력 (5초)
-C+ 251 ~ 450 (200 차이) - 장애물 : 과제+노트북+팀, 아이템 : 무적(10초) + 체력 (6초)
-B+ 451 ~ 700 (250 차이) - 장애물 : 속도증가, 아이템 : 무적(10초) + 체력 (7초)
-A 701 ~ 999  (300 차이) - 장애물 : 속도증가, 아이템 : 무적(10초) + 체력 (8초)
+C+ 251 ~ 450 (200 차이) - 장애물 : 과제+노트북+팀, 아이템 : 무적(10초) + 체력
+B+ 451 ~ 700 (250 차이) - 장애물 : 속도증가, 아이템 : 무적(10초) + 체력
+A 701 ~ 999  (300 차이) - 장애물 : 속도증가, 아이템 : 무적(10초) + 체력
 A+ 1000점 이상 : 장애물 : 속도증가, 아이템 : 10초
 
 S 히든 2000
