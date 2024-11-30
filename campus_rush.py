@@ -8,7 +8,7 @@ app = Ursina()
 pos = [-2, 0, 2]
 
 # 점수 표시
-score = 0
+score = 1000
 elapsed_time = 0
 score_text = Text(f"Score: {score}", position=(-0.7, 0.45), scale=2, color=color.white)
 
@@ -125,7 +125,7 @@ def spawn_item():
         item_type = item_types[random.randrange(0,2)]
         delay = 5
     
-    elif score >250 and score <= 999:
+    elif score >250:
         item_type = (item_types[random.randrange(0,3)])
         if item_types[random.randrange(0,2)]:
             delay = 5
