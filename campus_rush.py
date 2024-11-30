@@ -8,7 +8,7 @@ app = Ursina()
 pos = [-2, 0, 2]
 
 # 점수 표시
-score = 1000
+score = 0
 elapsed_time = 0
 score_text = Text(f"Score: {score}", position=(-0.7, 0.45), scale=2, color=color.white)
 
