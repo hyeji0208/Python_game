@@ -10,22 +10,24 @@ pos = [-2, 0, 2]
 # 점수 표시
 score = 0
 elapsed_time = 0
-score_text = Text(f"Score: {score}", position=(-0.77, 0.45), scale=2, color=color.black)
+score_text = Text(f"Score: {score}", position=(-0.77, 0.43), scale=2, color=color.black)
 
 #메인 배경화면
+'''
 background = Entity(
     model='quad',
     texture='graphic/game.png',
     scale=(40, 25, 1),              
     position=(0, -1, 50),               
 )
+'''
 
 # 게임 배경화면
 background = Entity(
     model='quad',
     texture='graphic/game.png',
     scale=(40, 25, 1),              
-    position=(0, -1, 50),               
+    position=(0, -2.5, 50),               
 )
 
 # bgm
@@ -42,8 +44,8 @@ current_texture_index = 0
 player = Entity(
     model='quad',
     texture=player_textures[current_texture_index],
-    scale=(1.5, 1.5, 1.5),
-    position=(0, 0, 2),
+    scale=(2, 2, 2),
+    position=(0, 0,0),
     collider = 'sphere'
     )
 
@@ -74,7 +76,7 @@ for i in range(max_health):
     heart = Entity(
         model='quad',
         texture='graphic/health.png',
-        position=(2.1 + i * 0.4, 3.2),
+        position=(2.1 + i * 0.4, 2.97),
         scale=(0.47, 0.47)
     )
     hearts.append(heart)
@@ -192,7 +194,7 @@ def spawn_item():
 
 # 카메라 생성
 camera.position = (0, 2, -10)
-camera.rotation = (3, 0, 0)
+camera.rotation = (4, 0, 0)
 
 # 캐릭터 좌우 이동, 스페이스 점프
 def input(key):
