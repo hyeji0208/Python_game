@@ -32,8 +32,37 @@ background = Entity(
 #main_bgm = Audio(sound_file_name='bgm/게임 메인.mp3', volume=1, pitch=1, loop=True, autoplay=True, auto_destroy=True) #메인화면 bgm
 game_bgm = Audio(sound_file_name='bgm/게임 시작.mp3', volume=0.5, loop=True, autoplay=True, auto_destroy=True) #게임중 bgm
 
+# 플레이어 걷는 애니메이션
+# 플레이어 텍스쳐
+player_textures = ['graphic/player1.png', 'graphic/player2.png']
+player_textures2 = ['graphic/player3.png', 'graphic/player4.png']
+current_texture_index = 0
+
 # 플레이어 생성
-player = Entity(model='cube', color=color.white, scale_y=1.5, position=(0, 0, 2), collider='box')
+player = Entity(
+    model='quad',
+    texture=player_textures[current_texture_index],
+    scale=(1.5, 1.5, 1.5),
+    position=(0, 0, 2),
+    collider = 'sphere'
+    )
+
+# 무적상태
+invincible = False 
+
+# 텍스처 변경 함수
+def switch_texture():
+    global current_texture_index, invincible
+    if invincible == True:
+        current_texture_index = (current_texture_index + 1) % len(player_textures2) 
+        player.texture = player_textures2[current_texture_index]
+    else:
+        current_texture_index = (current_texture_index + 1) % len(player_textures) 
+        player.texture = player_textures[current_texture_index]
+    invoke(switch_texture, delay=0.5)
+
+# 애니메이션 시작
+switch_texture()
 
 # 체력 생성
 global health
@@ -51,8 +80,6 @@ for i in range(max_health):
     hearts.append(heart)
 
 # 체력감소함수
-invincible = False # 무적 상태
-
 def reduce_health():
     global health, invincible
     if invincible != True: # 무적 상태가 아닐 경우 체력 감소
@@ -170,7 +197,7 @@ camera.rotation = (3, 0, 0)
 # 캐릭터 좌우 이동, 스페이스 점프
 def input(key):
     if key == 'space' and player.y == 0:
-        player.animate_y(2, duration=0.25, curve=curve.out_quad)
+        player.animate_y(1.5, duration=0.25, curve=curve.out_quad)
         invoke(player.animate_y, 0, duration=0.25, delay=0.25, curve=curve.in_quad)
     elif key == 'd' and player.x < max(pos):
         player.x += 2
