@@ -10,7 +10,27 @@ pos = [-2, 0, 2]
 # 점수 표시
 score = 0
 elapsed_time = 0
-score_text = Text(f"Score: {score}", position=(-0.7, 0.45), scale=2, color=color.white)
+score_text = Text(f"Score: {score}", position=(-0.77, 0.45), scale=2, color=color.black)
+
+#메인 배경화면
+background = Entity(
+    model='quad',
+    texture='graphic/game.png',
+    scale=(40, 25, 1),              
+    position=(0, -1, 50),               
+)
+
+# 게임 배경화면
+background = Entity(
+    model='quad',
+    texture='graphic/game.png',
+    scale=(40, 25, 1),              
+    position=(0, -1, 50),               
+)
+
+# bgm
+#main_bgm = Audio(sound_file_name='bgm/게임 메인.mp3', volume=1, pitch=1, loop=True, autoplay=True, auto_destroy=True) #메인화면 bgm
+game_bgm = Audio(sound_file_name='bgm/게임 시작.mp3', volume=0.5, loop=True, autoplay=True, auto_destroy=True) #게임중 bgm
 
 # 플레이어 생성
 player = Entity(model='cube', color=color.white, scale_y=1.5, position=(0, 0, 2), collider='box')
@@ -25,7 +45,7 @@ for i in range(max_health):
     heart = Entity(
         model='quad',
         texture='graphic/health.png',
-        position=(2 + i * 0.35, 3.2),
+        position=(2.1 + i * 0.4, 3.2),
         scale=(0.47, 0.47)
     )
     hearts.append(heart)
@@ -166,6 +186,7 @@ def update():
             destroy(block)
 
         elif player.intersects(block).hit: # 장애물과 충돌감지
+            Audio(sound_file_name='bgm/충돌.mp3', volume=0.5, loop=False) #충돌 소리
             reduce_health()
             blocks.remove(block)
             destroy(block)
@@ -177,6 +198,7 @@ def update():
             destroy(item)
 
         elif player.intersects(item).hit:
+            Audio(sound_file_name='bgm/아이템.mp3', volume=1, loop=False) #아이템 먹는 소리
             match item.name:
                 case 'heart1':
                     plus_health()
