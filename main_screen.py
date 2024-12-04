@@ -41,11 +41,14 @@ explain_screen = Entity(
     model='quad',
     texture='graphic/explain.png',              
     scale=(14.6, 8.2),
+    position=(3, 6),
     enabled=False             
 )
 
 def explain():
-    explain_screen.enable()
+    #explain_screen.enable()
+    main_screen.texture = 'graphic/explain.png'
+  
 
 explain_button.on_click = explain
 
