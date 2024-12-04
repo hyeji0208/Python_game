@@ -12,26 +12,7 @@ score = 0
 elapsed_time = 0
 score_text = Text(f"Score: {score}", position=(-0.77, 0.43), scale=2, color=color.black)
 
-#메인 배경화면
-'''
-background = Entity(
-    model='quad',
-    texture='graphic/game.png',
-    scale=(40, 25, 1),              
-    position=(0, -1, 50),               
-)
-'''
-
-# 게임 배경화면
-background = Entity(
-    model='quad',
-    texture='graphic/game.png',
-    scale=(40, 25, 1),              
-    position=(0, -2.5, 50),               
-)
-
 # bgm
-#main_bgm = Audio(sound_file_name='bgm/게임 메인.mp3', volume=1, pitch=1, loop=True, autoplay=True, auto_destroy=True) #메인화면 bgm
 game_bgm = Audio(sound_file_name='bgm/게임 시작.mp3', volume=0.5, loop=True, autoplay=True, auto_destroy=True) #게임중 bgm
 
 # 플레이어 걷는 애니메이션
