@@ -103,14 +103,15 @@ game_running = False
 ending_screen = Entity(
     model='quad',
     texture='graphic/s최종.png',
-    scale=(14.6, 8.2),
+    scale=(7.5, 4.2),
+    position=(0, 1.3),
     enabled=False
 )
 
 # 엔딩bgm
-end_bgm = Audio('bgm/엔딩.mp3', volume=0, pitch=1, loop=True, autoplay=True, auto_destroy=True)
-hidden_end_bgm = Audio('bgm/히든엔딩.mp3', volume=0, pitch=1, loop=True, autoplay=True, auto_destroy=True)
-f_end_bgm = Audio('bgm/f..mp3', volume=0, pitch=1, loop=True, autoplay=True, auto_destroy=True)
+end_bgm = Audio('bgm/엔딩.mp3', volume=0.5, pitch=1, loop=False, autoplay=False, auto_destroy=True)
+hidden_end_bgm = Audio('bgm/히든엔딩.mp3', volume=0.5, pitch=1, loop=False, autoplay=False, auto_destroy=True)
+f_end_bgm = Audio('bgm/f.mp3', volume=0.5, pitch=1, loop=False, autoplay=False, auto_destroy=True)
 
 # 다시하기 버튼
 retry_button = Button(
@@ -123,22 +124,48 @@ retry_button = Button(
     pressed_color=color.white,
     enabled = False
 )
+
 # 엔딩함수
-def ending():
+def ending(a):
     global game_running
     game_running = False
-
-    # 블록, 아이템 제거
-
 
     #엔딩화면
     game_bgm.volume = 0
     background.disable()
     player.enabled = False
     ending_screen.enable()
-    end_bgm.volume = 0.5
     game_bgm.volume = 0
-    retry_button.enable = True
+    retry_button.enabled = True
+
+    # 점수별 엔딩 매개변수
+    if a == 'f' :
+        ending_screen.texture ='graphic/F최종.png'
+        f_end_bgm.play()
+
+    elif a == 'd':
+        ending_screen.texture = 'graphic/D최종.png'
+        end_bgm.play()
+
+    elif a == 'c':
+        ending_screen.texture = 'graphic/C+최종.png'
+        end_bgm.play()
+
+    elif a == 'b':
+        ending_screen.texture = 'graphic/B+최종.png'
+        end_bgm.play()
+
+    elif a == 'a':
+        ending_screen.texture = 'graphic/A최종.png'
+        end_bgm.play()
+
+    elif a == 'aa':
+        ending_screen.texture = 'graphic/A+최종.png'
+        end_bgm.play()
+
+    elif a == 's':
+        ending_screen.texture = 'graphic/S최종.png'
+        hidden_end_bgm.play()
 
 # ---------------------------
 # 게임 화면 설정
@@ -222,8 +249,35 @@ def reduce_health():
         print(health)
         if health > 0:
             hearts[health].enabled = False
+
+        # 점수별 엔딩화면 실행
         elif health == 0 and score <= 100:
-            ending()
+            hearts[health].enabled = False
+            ending('f')
+
+        elif health == 0 and score > 100 and score <= 250:
+            hearts[health].enabled = False
+            ending('d')
+
+        elif health == 0 and score > 250 and score <= 450:
+            hearts[health].enabled = False
+            ending('c')
+
+        elif health == 0 and score > 450 and score <= 700:
+            hearts[health].enabled = False
+            ending('b')
+
+        elif health == 0 and score > 700 and score <= 999:
+            hearts[health].enabled = False
+            ending('a')
+
+        elif health == 0 and score > 999 and score < 2000:
+            hearts[health].enabled = False
+            ending('aa')
+
+        elif health == 0 and score >= 2000:
+            hearts[health].enabled = False
+            ending('s')
 
 # 아이템 효과 함수
 # 체력 아이템 (체력증가)
@@ -401,6 +455,8 @@ def start_game():
     start_button.disable()
     start1_button.disable()
     back_button.disable()
+    ending_screen.disable()
+    retry_button.disable()
     
     # 점수 표시
     global score
@@ -412,6 +468,8 @@ def start_game():
     camera.rotation = (4, 0, 0)
 
     # 체력 생성
+    global health
+    health = max_health
     for i in range(3):
         hearts[i].enabled = True
 
@@ -423,6 +481,7 @@ def start_game():
 
 start_button.on_click = start_game
 start1_button.on_click = start_game
+retry_button.on_click = start_game
 
 app.run()
 
