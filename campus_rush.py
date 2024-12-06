@@ -121,7 +121,7 @@ retry_button = Button(
     color=color.white,
     highlight_color=color.gray,
     pressed_color=color.white,
-    enable = False
+    enabled = False
 )
 # 엔딩함수
 def ending():
@@ -129,13 +129,7 @@ def ending():
     game_running = False
 
     # 블록, 아이템 제거
-    for block in blocks:
-        destroy(block)
-    blocks.clear()
 
-    for item in items:
-        destroy(item)
-    items.clear()
 
     #엔딩화면
     game_bgm.volume = 0
@@ -222,11 +216,14 @@ for i in range(max_health):
 
 # 체력감소함수
 def reduce_health():
-    global health, invincible
+    global health, invincible, score
     if invincible != True: # 무적 상태가 아닐 경우 체력 감소
         health -= 1
-        if health >= 0:
+        print(health)
+        if health > 0:
             hearts[health].enabled = False
+        elif health == 0 and score <= 100:
+            ending()
 
 # 아이템 효과 함수
 # 체력 아이템 (체력증가)
@@ -285,8 +282,6 @@ def spawn_block():
 def level (block):
     if score <=100 :    #F
         block.z -= 0.3
-        if health == 0:
-            ending()
 
     elif score > 100 and score <= 250:   #D
         block.z -= 0.4
@@ -350,6 +345,9 @@ def input(key):
 
 # 장애물, 아이템 이동
 def update():
+    if not game_running:
+        return
+
     for block in blocks[:]:
         level(block)
         if block.z < -4:  # 화면 밖으로 나가면 삭제
