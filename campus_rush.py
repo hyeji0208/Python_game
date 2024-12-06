@@ -92,6 +92,60 @@ def main():
 back_button.on_click = main
 explain_button.on_click = explain
 
+
+# ---------------------------
+# 엔딩 화면 설정
+# ---------------------------
+
+game_running = False
+
+# 엔딩화면
+ending_screen = Entity(
+    model='quad',
+    texture='graphic/s최종.png',
+    scale=(14.6, 8.2),
+    enabled=False
+)
+
+# 엔딩bgm
+end_bgm = Audio('bgm/엔딩.mp3', volume=0, pitch=1, loop=True, autoplay=True, auto_destroy=True)
+hidden_end_bgm = Audio('bgm/히든엔딩.mp3', volume=0, pitch=1, loop=True, autoplay=True, auto_destroy=True)
+f_end_bgm = Audio('bgm/f..mp3', volume=0, pitch=1, loop=True, autoplay=True, auto_destroy=True)
+
+# 다시하기 버튼
+retry_button = Button(
+    model='quad',
+    texture='graphic/retrybutton.png',
+    scale=(0.22, 0.07),
+    position=(-0.7, -0.42),
+    color=color.white,
+    highlight_color=color.gray,
+    pressed_color=color.white,
+    enable = False
+)
+# 엔딩함수
+def ending():
+    global game_running
+    game_running = False
+
+    # 블록, 아이템 제거
+    for block in blocks:
+        destroy(block)
+    blocks.clear()
+
+    for item in items:
+        destroy(item)
+    items.clear()
+
+    #엔딩화면
+    game_bgm.volume = 0
+    background.disable()
+    player.enabled = False
+    ending_screen.enable()
+    end_bgm.volume = 0.5
+    game_bgm.volume = 0
+    retry_button.enable = True
+
 # ---------------------------
 # 게임 화면 설정
 # ---------------------------
@@ -204,8 +258,10 @@ block_types = [
 blocks = []
 
 def spawn_block():
+    if not game_running:  # 게임이 진행 중이 아니면 함수 실행 중단
+        return
 
-    if score <= 100:
+    elif score <= 100:
         block_type = block_types[0]
 
     elif score > 100 and score <= 250:
@@ -227,22 +283,24 @@ def spawn_block():
 
 # 게임 난이도
 def level (block):
-    if score <=100 :
+    if score <=100 :    #F
         block.z -= 0.3
+        if health == 0:
+            ending()
 
-    elif score > 100 and score <= 250:
+    elif score > 100 and score <= 250:   #D
         block.z -= 0.4
 
-    elif score > 250 and score <= 450:
+    elif score > 250 and score <= 450:   #C+
         block.z -= 0.5
     
-    elif score > 450 and score <= 700:
+    elif score > 450 and score <= 700:   #B+
         block.z -= 0.6
 
-    elif score > 700 and score <= 999:
+    elif score > 700 and score <= 999:   #A
         block.z -= 0.7
 
-    elif score > 999:
+    elif score > 999:    #A+
         block.z -= 1
 
 # 아이템 종류
@@ -255,7 +313,10 @@ item_types = [
 # 아이템 리스트 생성
 items = []
 def spawn_item():
-    if score <= 250:
+    if not game_running:  # 게임이 진행 중이 아니면 함수 실행 중단
+        return
+    
+    elif score <= 250:
         item_type = item_types[random.randrange(0,2)]
         delay = 5
 
@@ -357,6 +418,8 @@ def start_game():
         hearts[i].enabled = True
 
     # 장애물, 아이템 생성
+    global game_running
+    game_running = True
     spawn_block()
     spawn_item()
 
