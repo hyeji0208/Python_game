@@ -247,7 +247,6 @@ def reduce_health():
     global health, invincible, score
     if invincible != True: # 무적 상태가 아닐 경우 체력 감소
         health -= 1
-        print(health)
         if health > 0:
             hearts[health].enabled = False
 
@@ -485,8 +484,6 @@ start1_button.on_click = start_game
 retry_button.on_click = start_game
 
 app.run()
-
-
 
 """
 점수구간
