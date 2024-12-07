@@ -4,6 +4,7 @@ import random
 
 # 윈도우 생성
 app = Ursina()
+window.size = (1536, 864)
 
 # ---------------------------
 # 메인 화면 설정
@@ -328,7 +329,7 @@ def spawn_block():
     name=block_type['name'],
     position=(random.choice(pos), 0, 20),
     collider='quad'
-)
+    )
     blocks.append(block)
     invoke(spawn_block, delay=2)
 
