@@ -1,4 +1,4 @@
-# 🏃‍♀️ 대학생 러닝 게임 (Running Game for College Students)
+# 대학생 러닝 게임
 
 ![게임 스크린샷](graphic/main.png)
 
@@ -20,7 +20,7 @@
 
 ---
 
-## 🚀 실행 방법
+## 실행 방법
 
 1. **필수 환경 설치**:
    ```bash
